@@ -115,8 +115,8 @@ sub _handleException
         my $out     = $code . ':' . $message;
 
         $message =~ m/TTransportException/ and die $out;
-        if ($message =~ m/TSocket/) {
-            # suppress TSocket messages
+        if ($message =~ m/Socket/) {
+            # suppress Socket messages
         } else {
             warn $out;
         }
@@ -124,7 +124,6 @@ sub _handleException
         warn $e;
     }
 }
-
 
 #
 # SimpleServer from the Server base class that handles one connection at a time
@@ -190,6 +189,9 @@ sub new
 sub serve
 {
     my $self = shift;
+
+    # THRIFT-3848: without ignoring SIGCHLD, perl ForkingServer goes into a tight loop
+    $SIG{CHLD} = 'IGNORE';
 
     $self->{serverTransport}->listen();
     while (1)

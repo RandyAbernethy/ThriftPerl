@@ -17,4 +17,16 @@
 # under the License.
 #
 
-EXTRA_DIST = memory_buffer.t processor.t multiplex.t
+use strict;
+use warnings;
+
+package Thrift::MessageType;
+
+use strict;
+
+use constant CALL 	=> 1;
+use constant REPLY	=> 2;
+use constant EXCEPTION	=> 3;
+use constant ONEWAY 	=> 4;
+
+1;

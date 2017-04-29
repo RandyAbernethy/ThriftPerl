@@ -17,48 +17,15 @@
 # under the License.
 #
 
-package Thrift;
-
-our $VERSION = '0.10.0';
-
-require 5.6.0;
+use 5.10.0;
 use strict;
 use warnings;
 
-#
-# Data types that can be sent via Thrift
-#
-package TType;
-use constant STOP   => 0;
-use constant VOID   => 1;
-use constant BOOL   => 2;
-use constant BYTE   => 3;
-use constant I08    => 3;
-use constant DOUBLE => 4;
-use constant I16    => 6;
-use constant I32    => 8;
-use constant I64    => 10;
-use constant STRING => 11;
-use constant UTF7   => 11;
-use constant STRUCT => 12;
-use constant MAP    => 13;
-use constant SET    => 14;
-use constant LIST   => 15;
-use constant UTF8   => 16;
-use constant UTF16  => 17;
-1;
-
-#
-# Message types for RPC
-#
-package TMessageType;
-use constant CALL      => 1;
-use constant REPLY     => 2;
-use constant EXCEPTION => 3;
-use constant ONEWAY    => 4;
-1;
+use Thrift;
+use Thrift::Type;
 
 package Thrift::TException;
+use version 0.77; our $VERSION = version->declare("$Thrift::VERSION");
 
 use overload '""' => sub {
     return
@@ -75,10 +42,10 @@ sub new {
 
     return bless($self,$classname);
 }
-1;
 
-package TApplicationException;
-use base('Thrift::TException');
+package Thrift::TApplicationException;
+use parent -norequire, 'Thrift::TException';
+use version 0.77; our $VERSION = version->declare("$Thrift::VERSION");
 
 use constant UNKNOWN                 => 0;
 use constant UNKNOWN_METHOD          => 1;
@@ -114,7 +81,7 @@ sub read {
     while (1)
     {
         $xfer += $input->readFieldBegin(\$fname, \$ftype, \$fid);
-        if ($ftype == TType::STOP) {
+        if ($ftype == Thrift::TType::STOP) {
             last; next;
         }
 
@@ -122,7 +89,7 @@ sub read {
       {
           /1/ && do{
 
-              if ($ftype == TType::STRING) {
+              if ($ftype == Thrift::TType::STRING) {
                   $xfer += $input->readString(\$self->{message});
               } else {
                   $xfer += $input->skip($ftype);
@@ -132,7 +99,7 @@ sub read {
           };
 
           /2/ && do{
-              if ($ftype == TType::I32) {
+              if ($ftype == Thrift::TType::I32) {
                   $xfer += $input->readI32(\$self->{code});
               } else {
                   $xfer += $input->skip($ftype);
@@ -159,13 +126,13 @@ sub write {
     $xfer += $output->writeStructBegin('TApplicationException');
 
     if ($self->getMessage()) {
-        $xfer += $output->writeFieldBegin('message', TType::STRING, 1);
+        $xfer += $output->writeFieldBegin('message', Thrift::TType::STRING, 1);
         $xfer += $output->writeString($self->getMessage());
         $xfer += $output->writeFieldEnd();
     }
 
     if ($self->getCode()) {
-        $xfer += $output->writeFieldBegin('type', TType::I32, 2);
+        $xfer += $output->writeFieldBegin('type', Thrift::TType::I32, 2);
         $xfer += $output->writeI32($self->getCode());
         $xfer += $output->writeFieldEnd();
     }

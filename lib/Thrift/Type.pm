@@ -17,4 +17,34 @@
 # under the License.
 #
 
-EXTRA_DIST = memory_buffer.t processor.t multiplex.t
+use 5.10.0;
+use strict;
+use warnings;
+
+use Thrift;
+
+#
+# Data types that can be sent via Thrift
+#
+package Thrift::TType;
+use version 0.77; our $VERSION = version->declare("$Thrift::VERSION");
+
+use constant STOP   => 0;
+use constant VOID   => 1;
+use constant BOOL   => 2;
+use constant BYTE   => 3;
+use constant I08    => 3;
+use constant DOUBLE => 4;
+use constant I16    => 6;
+use constant I32    => 8;
+use constant I64    => 10;
+use constant STRING => 11;
+use constant UTF7   => 11;
+use constant STRUCT => 12;
+use constant MAP    => 13;
+use constant SET    => 14;
+use constant LIST   => 15;
+use constant UTF8   => 16;
+use constant UTF16  => 17;
+
+1;
