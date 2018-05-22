@@ -17,20 +17,19 @@
 # under the License.
 #
 
+#
+# This will fix up the distribution so that CPAN properly
+# indexes Thrift.
+#
+
 use 5.10.0;
 use strict;
 use warnings;
+use utf8;
 
-#
-# Versioning
-#
-# Every perl module for Thrift will have the same version
-# declaration.  For a production build, change it below to
-# something like "v0.11.0" and all of the packages in all
-# of the files will pick it up from here.
-#
+use Data::Dumper;
+use CPAN::Meta;
 
-package Thrift;
-use version 0.77; our $VERSION = version->declare("v0.11.0");
-
-1;
+my $meta = CPAN::Meta->load_file('META.json');
+$meta->{'provides'} = { 'Thrift' => { 'file' => 'lib/Thrift.pm', 'version' => $meta->version() } };
+$meta->save('META.json');
