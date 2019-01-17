@@ -17,20 +17,37 @@
 # under the License.
 #
 
-use 5.10.0;
+use Test::More tests => 6;
+
 use strict;
 use warnings;
 
-#
-# Versioning
-#
-# Every perl module for Thrift will have the same version
-# declaration.  For a production build, change it below to
-# something like "v0.11.0" and all of the packages in all
-# of the files will pick it up from here.
-#
+use Data::Dumper;
 
-package Thrift;
-use version 0.77; our $VERSION = version->declare("v1.0.0");
+use Thrift::BinaryProtocol;
+use Thrift::MemoryBuffer;
 
-1;
+use ThriftTest::Types;
+
+
+my $transport = Thrift::MemoryBuffer->new();
+my $protocol = Thrift::BinaryProtocol->new($transport);
+
+my $a = ThriftTest::Xtruct->new();
+$a->i32_thing(10);
+$a->i64_thing(30);
+$a->string_thing('Hello, world!');
+$a->write($protocol);
+
+my $b = ThriftTest::Xtruct->new();
+$b->read($protocol);
+is($b->i32_thing, $a->i32_thing);
+is($b->i64_thing, $a->i64_thing);
+is($b->string_thing, $a->string_thing);
+
+$b->write($protocol);
+my $c = ThriftTest::Xtruct->new();
+$c->read($protocol);
+is($c->i32_thing, $a->i32_thing);
+is($c->i64_thing, $a->i64_thing);
+is($c->string_thing, $a->string_thing);

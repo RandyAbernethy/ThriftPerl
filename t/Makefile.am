@@ -17,20 +17,4 @@
 # under the License.
 #
 
-use 5.10.0;
-use strict;
-use warnings;
-
-#
-# Versioning
-#
-# Every perl module for Thrift will have the same version
-# declaration.  For a production build, change it below to
-# something like "v0.11.0" and all of the packages in all
-# of the files will pick it up from here.
-#
-
-package Thrift;
-use version 0.77; our $VERSION = version->declare("v1.0.0");
-
-1;
+EXTRA_DIST = memory_buffer.t processor.t multiplex.t
